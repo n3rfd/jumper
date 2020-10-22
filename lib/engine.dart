@@ -15,6 +15,7 @@ class _GameEngineState extends State<GameEngine>
   final b = Box();
   AnimationController _animationController;
   List<Obstacle> _obstacles = <Obstacle>[];
+  bool _gameIsStart = false;
 
   @override
   void initState() {
@@ -39,16 +40,18 @@ class _GameEngineState extends State<GameEngine>
       setState(() {
         b.updatePosition();
 
-        gameSpeed += 0.0003;
-        spawnObstacle--;
+        if (_gameIsStart) {
+          gameSpeed += 0.0003;
+          spawnObstacle--;
 
-        if (spawnObstacle <= 0) {
-          _createObstacle();
+          if (spawnObstacle <= 0) {
+            _createObstacle();
+          }
+
+          _obstacles.forEach((i) {
+            i.move();
+          });
         }
-
-        _obstacles.forEach((i) {
-          i.move();
-        });
       });
     }
   }
@@ -77,27 +80,55 @@ class _GameEngineState extends State<GameEngine>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: GestureDetector(
-        onTap: () {
-          b.jump();
-        },
-        child: Center(
-          child: Container(
-            width: double.infinity,
-            height: 150,
-            color: Colors.grey,
-            child: Stack(
-              children: <Widget>[
-                b.getBox,
-                Stack(
-                  children: _obstacles.map((i) => i.getObstacle).toList(),
-                )
-              ],
+    return Stack(
+      children: <Widget>[
+        Scaffold(
+          body: GestureDetector(
+            onTap: () {
+              b.jump();
+            },
+            child: Center(
+              child: Container(
+                width: double.infinity,
+                height: 150,
+                color: Colors.grey,
+                child: Stack(
+                  children: <Widget>[
+                    b.getBox,
+                    Stack(
+                      children: _obstacles.map((i) => i.getObstacle).toList(),
+                    )
+                  ],
+                ),
+              ),
             ),
           ),
         ),
-      ),
+        if (!_gameIsStart)
+          Opacity(
+            opacity: .6,
+            child: ModalBarrier(
+              dismissible: false,
+              color: Colors.black54,
+            ),
+          ),
+        if (!_gameIsStart)
+          Center(
+            child: FlatButton(
+              onPressed: () {
+                _gameIsStart = true;
+              },
+              child: Text(
+                'Press me start',
+                style: TextStyle(
+                  fontSize: 25.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }
