@@ -16,6 +16,7 @@ class _GameEngineState extends State<GameEngine>
   AnimationController _animationController;
   List<Obstacle> _obstacles = <Obstacle>[];
   bool _gameIsStart = false;
+  int _score = 0;
 
   @override
   void initState() {
@@ -50,6 +51,7 @@ class _GameEngineState extends State<GameEngine>
         if (_gameIsStart) {
           gameSpeed += 0.0003;
           spawnObstacle--;
+          _score++;
 
           if (spawnObstacle <= 0) {
             _createObstacle();
@@ -98,25 +100,43 @@ class _GameEngineState extends State<GameEngine>
       children: <Widget>[
         Scaffold(
           body: GestureDetector(
-            onTap: () {
-              b.jump();
-            },
-            child: Center(
-              child: Container(
-                width: double.infinity,
-                height: 150,
-                color: Colors.grey,
-                child: Stack(
-                  children: <Widget>[
-                    b.getBox,
-                    Stack(
-                      children: _obstacles.map((i) => i.getObstacle).toList(),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
+              onTap: () {
+                b.jump();
+              },
+              child: Stack(
+                children: <Widget>[
+                  Container(
+                    alignment: Alignment.topCenter,
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 20,
+                    ),
+                    child: Text(
+                      'Your Score : ' + _score.toString(),
+                      style: new TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blueGrey,
+                      ),
+                    ),
+                  ),
+                  Center(
+                    child: Container(
+                      width: double.infinity,
+                      height: 150,
+                      color: Colors.grey,
+                      child: Stack(
+                        children: <Widget>[
+                          b.getBox,
+                          Stack(
+                            children:
+                                _obstacles.map((i) => i.getObstacle).toList(),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              )),
         ),
         if (!_gameIsStart)
           Opacity(
@@ -130,6 +150,7 @@ class _GameEngineState extends State<GameEngine>
           Center(
             child: FlatButton(
               onPressed: () {
+                _score = 0;
                 _gameIsStart = true;
               },
               child: Text(
