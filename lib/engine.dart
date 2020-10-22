@@ -35,6 +35,13 @@ class _GameEngineState extends State<GameEngine>
     super.dispose();
   }
 
+  void _gameOver() async {
+    _gameIsStart = false;
+    _obstacles = [];
+    gameSpeed = initGameSpeed;
+    spawnObstacle = initSpawnObstacle;
+  }
+
   void _updateUI() {
     if (b != null) {
       setState(() {
@@ -50,6 +57,13 @@ class _GameEngineState extends State<GameEngine>
 
           _obstacles.forEach((i) {
             i.move();
+
+            if (b.width + b.x >= i.x &&
+                b.x <= i.x + i.width &&
+                b.y + b.height >= i.y &&
+                b.y <= i.y + i.height) {
+              _gameOver();
+            }
           });
         }
       });

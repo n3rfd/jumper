@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 
 class Box {
   double y = 0;
+  double x = 10;
   double _dy = 0;
   double _jumpForce = 15.0;
   double height = 25;
+  double width = 25;
   bool _canJump = true;
 
   void updatePosition() {
@@ -28,7 +30,7 @@ class Box {
   }
 
   Widget get getBox => Transform.translate(
-        offset: Offset(10, y),
+        offset: Offset(x, y),
         child: Container(
           width: 25,
           height: 25,
